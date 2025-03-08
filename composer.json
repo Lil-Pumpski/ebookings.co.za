@@ -1,0 +1,9 @@
+{
+  "require": {
+  	"stripe/stripe-php": "^7.77",
+    "vlucas/phpdotenv": "^5.3",
+    "lifenpag/asaas-php": "^1.0",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "sonata-project/google-authenticator": "^2.3"
+  }
+}
