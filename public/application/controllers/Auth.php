@@ -1790,7 +1790,8 @@ class Auth extends MY_Controller
         $user_id      = $this->uri->segment(3);
         $new_pass_key = $this->uri->segment(4);
 
-        $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+        // $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+        $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length[6]|max_length[20]|callback__valid_password');
         $this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
 
         $data['errors'] = array();
@@ -1870,7 +1871,8 @@ class Auth extends MY_Controller
         $user_id      = $this->uri->segment(3);
         $new_pass_key = $this->uri->segment(4);
 
-        $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+        // $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+        $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length[6]|max_length[20]|callback__valid_password');
         $this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
 
 
@@ -1948,6 +1950,15 @@ class Auth extends MY_Controller
         $data['main_content'] = 'auth/activate_employee_form';
 
         $this->load->view('includes/bootstrapped_template', $data);
+    }
+
+    function _valid_password($password) {
+        if (preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,20}$/', $password)) {
+            return TRUE;
+        } else {
+            $this->form_validation->set_message('_valid_password', 'Password must be 6-20 characters, include uppercase, lowercase, number and special character.');
+            return FALSE;
+        }
     }
 
     /**

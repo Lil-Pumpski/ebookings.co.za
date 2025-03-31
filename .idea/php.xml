@@ -138,7 +138,6 @@
       <path value="$PROJECT_DIR$/docker/vendor/league/commonmark" />
       <path value="$PROJECT_DIR$/docker/vendor/league/mime-type-detection" />
       <path value="$PROJECT_DIR$/docker/vendor/league/flysystem" />
-      <path value="$PROJECT_DIR$/docker/vendor/facade/ignition" />
       <path value="$PROJECT_DIR$/docker/vendor/facade/ignition-contracts" />
       <path value="$PROJECT_DIR$/docker/vendor/ramsey/uuid" />
       <path value="$PROJECT_DIR$/docker/vendor/ramsey/collection" />
