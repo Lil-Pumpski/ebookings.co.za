@@ -26,13 +26,13 @@ class MY_Controller extends CI_Controller {
     {
         parent::__construct();
         $this->ci =& get_instance();
-        
+
         $this->profiler_is_on = false;
         if(isset($_GET['dev_mode']) && $_GET['dev_mode'] == getenv('DEVMODE_PASS')){
             $this->ci->output->enable_profiler(TRUE);
             $this->profiler_is_on = true;
         }
-        
+
         $this->load->library('tank_auth');
         $this->load->library('permission');
         $this->load->library('Template');
@@ -53,6 +53,16 @@ class MY_Controller extends CI_Controller {
         $this->image_url = "https://".getenv("AWS_S3_BUCKET").".s3.amazonaws.com/";
 
         $this->check_login();
+
+        $this->is_overview_calendar = false; // $user['is_overview_calendar'];
+
+        if (isset($this->company_data['enable_new_calendar'])) {
+            $this->enable_new_calendar = $this->company_data['enable_new_calendar'];
+            $this->enable_hourly_booking = $this->enable_new_calendar ? $this->company_data['enable_hourly_booking'] : false;
+        } else {
+            $this->enable_new_calendar = false;
+            $this->enable_hourly_booking = false;
+        }
 
         $all_active_modules = array();
         $modules_path = $this->config->item('module_location'); 
@@ -422,8 +432,8 @@ class MY_Controller extends CI_Controller {
             $this->company_is_tos_agreed = ($user['tos_agreed_date'] >= TOS_PUBLISH_DATE);
             $this->is_overview_calendar = false; // $user['is_overview_calendar'];
 
-            $this->enable_new_calendar = $company['enable_new_calendar'];
-            $this->enable_hourly_booking = $this->enable_new_calendar ? $company['enable_hourly_booking'] : false;
+            // $this->enable_new_calendar = $company['enable_new_calendar'];
+            // $this->enable_hourly_booking = $this->enable_new_calendar ? $company['enable_hourly_booking'] : false;
 
             $this->first_name = $user['first_name'];
             $this->last_name = $user['last_name'];

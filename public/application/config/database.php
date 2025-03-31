@@ -42,11 +42,17 @@ $active_group = 'default';
 $active_record = TRUE;
 
 
+$db['default']['hostname'] = 'minical-db-1';
+$db['default']['username'] = 'root';
+$db['default']['password'] = 'root';
+$db['default']['database'] = 'minical_db';
+
+/*
 $db['default']['hostname'] = getenv("DATABASE_HOST");
 $db['default']['username'] = getenv("DATABASE_USER");
 $db['default']['password'] = getenv("DATABASE_PASS");
 $db['default']['database'] = getenv("DATABASE_NAME");
-
+*/
 	
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';

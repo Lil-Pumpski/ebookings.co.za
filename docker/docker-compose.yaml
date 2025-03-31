@@ -1,46 +1,59 @@
 version: '3'
+
 services:
+
     web:
+        container_name: minical-web-1
         image: nginx:latest
         ports:
-            - "8080:80"
+            - "8040:80"
         volumes:
-            - ./nginx.conf:/etc/nginx/conf.d/default.conf
+            - "/Users/lil-pumpski/Downloads/MesaDigital/Reserved/PMS/docker/nginx.conf:/etc/nginx/conf.d/default.conf"
             - ../:/app
-        links:
-            - php
-
+            - ../public:/app/public
+        depends_on:
+                - php
     php:
+        container_name: minical-php-1
         build:
             context: .
-            dockerfile: PHP.Dockerfile
+            dockerfile: docker/PHP.Dockerfile
         volumes:
             - ../:/app
-        links:
+            - ../public:/app/public
+        depends_on:
             - db
             - composer
+        # Remove this line:
+        # command: php artisan serve --host=0.0.0.0 --port=8080
+        expose:
+            - "9000"
 
     db:
+        container_name: minical-db-1
         image: mariadb:latest
         environment:
             MYSQL_USER: 'root'
             MYSQL_PASSWORD: 'root'
-            # ensure the password matches the DATABASE_PASS above
             MYSQL_ROOT_PASSWORD: 'root'
-            # ensure the name matches the DATABASE_NAME above
             MYSQL_DATABASE: 'minical_db'
         volumes:
+            - ./mysql-config/my.cnf:/etc/mysql/my.cnf
             - mysqldata:/var/lib/mysql
         ports:
-            - 3307:3306
+            - "3307:3306"  # Ensuring Laravel connects properly
 
     composer:
+        container_name: minical-composer-1
         image: composer:latest
-        command: [ "sleep", "infinity" ]
+        command: ["sleep","infinity"]
         volumes:
-            - ..:/app
+            - ../:/app
+            - ../public:/app/public
+        working_dir: /app
 
     phpmyadmin:
+        container_name: minical-phpmyadmin
         image: phpmyadmin/phpmyadmin
         ports:
             - '8888:80'
@@ -50,4 +63,4 @@ services:
             - db
 
 volumes:
-    mysqldata: {}
+    mysqldata:

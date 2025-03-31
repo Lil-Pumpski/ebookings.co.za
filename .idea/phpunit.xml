@@ -4,6 +4,7 @@
     <option name="directories">
       <list>
         <option value="$PROJECT_DIR$/public/pages/tools/test" />
+        <option value="$PROJECT_DIR$/docker/tests" />
       </list>
     </option>
   </component>

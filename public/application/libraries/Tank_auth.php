@@ -62,13 +62,32 @@ class Tank_auth
 			}
 
 			if (!is_null($user = $this->ci->users->$get_user_func($login))) {	// login ok
+
+				log_message('debug', '[AUTH] User found: ' . print_r($user, true));
+				log_message('debug', '[AUTH] Checking company via get_latest_company_id()...');
 				
 				// $profile = $this->ci->users->get_profile($user->id); //load profile TO DO: add error checking / verification
 				// $company_id = $profile->current_company_id;
 
-				$get_latest_company = $this->ci->User_model->get_latest_company_id($user->id);
+                $get_latest_company = $this->ci->User_model->get_latest_company_id($user->id);
+                log_message('debug', '[AUTH] Got user: ' . print_r($user, true));
+                log_message('debug', '[AUTH] Latest company: ' . print_r($get_latest_company, true));
 
-				$company_id = $get_latest_company->company_id;
+                if (is_object($get_latest_company)) {
+                    $company_id = $get_latest_company->company_id ?? null;
+                } elseif (is_array($get_latest_company)) {
+                    $company_id = $get_latest_company['company_id'] ?? null;
+                } else {
+                    $company_id = null;
+                }
+
+                if (!$company_id) {
+                    log_message('error', '[AUTH] get_latest_company_id() returned invalid or null company_id for user_id: ' . $user->id);
+                    $this->error = array('login' => 'auth_incorrect_login');
+                    return FALSE;
+                }
+
+                log_message('debug', '[AUTH] Got company ID: ' . $company_id);
 				
 
 				// Does password match hash in database?
@@ -100,7 +119,7 @@ class Tank_auth
 									'user_role' => $user_role,
 									'language' => $user_profile['language'],
 	                                'language_id' => $user_profile['language_id'],
-	                                'created' => $user->created,
+                                    'created' => $user->created_at ?? null,
 	                                'first_name' => $user_profile['first_name'],
 	                                'last_name' => $user_profile['last_name']
 							);
@@ -111,6 +130,7 @@ class Tank_auth
 						//Check if user belongs to the company
 						if(is_null($user_role = $this->ci->User_model->get_user_role($user->id, $company_id)))
 						{							
+							log_message('debug', '[AUTH] User role: ' . print_r($user_role, true));
 							$this->increase_login_attempt($login);
 							$this->error = array('login' => 'auth_incorrect_login');
 						}
@@ -131,7 +151,7 @@ class Tank_auth
 								'current_selling_date' => $current_selling_date,
 								'language' => $user_profile['language'],
                                 'language_id' => $user_profile['language_id'],
-                                'created' => $user->created,
+                                'created' => $user->created_at ?? null,
                                 'first_name' => $user_profile['first_name'],
                                 'last_name' => $user_profile['last_name']
 						);
@@ -177,6 +197,8 @@ class Tank_auth
 				$this->error = array('login' => 'auth_incorrect_login');
 			}
 		}
+
+		log_message('error', '[AUTH] Final login failure. Login: ' . $login);
 		return FALSE;
 	}
 

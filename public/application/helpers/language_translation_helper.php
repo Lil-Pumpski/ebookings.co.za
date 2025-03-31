@@ -35,7 +35,7 @@ if ( ! function_exists('get_languages'))
 
         $where = array('is_default_lang'=>1);
         $result = $CI->translation_model->get_record_where('language',$where);
-        if(!empty($result)) return $result[0];
+        if(!empty($result)) return $result[0] ?? null;
         return FALSE;
 	}
         
@@ -49,11 +49,11 @@ if ( ! function_exists('get_languages'))
 		$result = $CI->translation_model->get_record_where('language', $where);
 
 		if (!empty($result)) {
-			$CI->session->set_userdata(array('language_id' => $result[0]['id']));
+			$CI->session->set_userdata(array('language_id' => $result[0]['id'] ?? null));
 			$CI->User_model->update_user_profile($CI->session->userdata('user_id'), Array(
-				'language_id' => $result[0]['id']
+				'language_id' => $result[0]['id'] ?? null
 			));
-			return $result[0]['id'];
+			return $result[0]['id'] ?? null;
 		} else {
 			return FALSE;
 		}
@@ -70,7 +70,7 @@ if ( ! function_exists('get_languages'))
         
         //if($language_name == ''){
             $language_data = $CI->translation_model->get_record_where('language', array('id' => $language_id));
-            $language_name = $language_data[0]['flag'];
+            $language_name = $language_data[0]['flag'] ?? null;
         //}
 
         $modules_path = APPPATH.'extensions/';
@@ -143,7 +143,7 @@ if ( ! function_exists('get_languages'))
         global $current_translation_version;
         if (!$current_translation_version) {
             $current_translation_version = $CI->translation_model->get_record_where('language', array('language_name' => $CI->session->userdata('language')));
-            $current_translation_version = isset($current_translation_version[0]) ? $current_translation_version[0]['version'] : 1;
+            $current_translation_version = isset($current_translation_version[0]) ? $current_translation_version[0]['version'] : 1 ?? null;
         }
 
         //!$CI->all_translations &&

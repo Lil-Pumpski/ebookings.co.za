@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/public/application/extensions" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/public/application/extensions/booking_registration_card" vcs="Git" />
   </component>
 </project>

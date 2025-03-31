@@ -51,19 +51,27 @@ class Auth extends MY_Controller
     {
         if (strtolower($_SERVER['HTTP_HOST']) == 'localhost')
         {
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
         }
         else
         {
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
         }
     }
+
+    public $all_translations_data = [];
 
     // for migration. called from migrate.js
     function run_query($query_index)
     {
         if (!$this->tank_auth->is_logged_in() || $this->session->userdata('user_role') != "is_admin") {
-            redirect('/booking/');
+            // redirect('/booking/');
+            header('Location: /booking/');
+            exit;
         }
 
         $this->load->helper('file');
@@ -82,7 +90,9 @@ class Auth extends MY_Controller
     function migrate()
     {
         if (!$this->tank_auth->is_logged_in() || $this->session->userdata('user_role') != "is_admin") {
-            redirect('/booking/');
+            // redirect('/booking/');
+            header('Location: /booking/');
+            exit;
         }
         //$this->output->enable_profiler(TRUE);
 
@@ -101,6 +111,8 @@ class Auth extends MY_Controller
      */
     function login()
     {
+        log_message('debug', 'Tank_auth login() called with login: ');
+
         $this->load->model('user_model');
         $host_name = $_SERVER['HTTP_HOST'];
         $white_label_name = explode('.', $host_name);
@@ -140,7 +152,9 @@ class Auth extends MY_Controller
         $data['message'] = ($this->session->flashdata('message')) ? $this->session->flashdata('message') : "";
 
         if ($this->tank_auth->is_logged_in()) { // if user is already logged in
-            redirect('/menu/select_hotel/'.$this->company_id);
+            // redirect('/menu/select_hotel/'.$this->company_id);
+            header('Location: /menu/select_hotel/' . $this->company_id);
+            exit;
         }
         else 
         { // time to authenticate!
@@ -235,7 +249,9 @@ class Auth extends MY_Controller
                 if($security['security_status'] == 1 && $email != SUPER_ADMIN && $email != 'support@roomsy.com'){
                     $encode_email = base64_encode($email);
                     $encode_from = base64_encode('security');
-                    redirect('auth/show_qr_code?email='.$encode_email.'&from='.$encode_from);
+                    // redirect('auth/show_qr_code?email='.$encode_email.'&from='.$encode_from);
+                    header('Location: /auth/show_qr_code?email=\'' . $encode_email. '&from=\'' . $encode_from);
+                    exit;
                 }
 
                 $admin_user_ids = $this->Whitelabel_partner_model->get_whitelabel_admin_ids($this->session->userdata('user_id'));
@@ -247,15 +263,21 @@ class Auth extends MY_Controller
                     ) && $admin_user_ids[0] == $this->session->userdata('user_id')
                 )
                 {
-                    redirect('/admin');
+                    // redirect('/admin');
+                    header('Location: /admin/');
+                    exit;
                 }               
                 elseif($this->session->userdata('user_role') == "is_housekeeping" || in_array("is_housekeeping", $employee_permission['permissions']))
                 {
-                    redirect('/room');
+                    // redirect('/room');
+                    header('Location: /room/');
+                    exit;
                 }
                 else
                 {
-                    redirect('/menu/select_hotel/'.$this->company_id);
+                    // redirect('/menu/select_hotel/'.$this->company_id);
+                    header('Location: /menu/select_hotel/' . $this->company_id);
+                    exit;
                 }
             } else { 
                 $errors = $this->tank_auth->get_error_message();
@@ -576,11 +598,15 @@ class Auth extends MY_Controller
         $this->session->set_flashdata('message', $message);
         $this->session->set_flashdata('flash_type', $type);
         if ($this->tank_auth->is_logged_in()) { // if user is already logged in
-            redirect('/booking');
+            // redirect('/booking');
+            header('Location: /booking/');
+            exit;
         }
         else
         {
-            redirect('/auth/login');
+            // redirect('/auth/login');
+            header('Location: /auth/login/');
+            exit;
         }
     }
 
@@ -610,7 +636,9 @@ class Auth extends MY_Controller
             $this->Employee_log_model->insert_log($employee_log_detail);
         }
         $this->tank_auth->logout();
-        redirect('/auth/login/');
+        // redirect('/auth/login/');
+        header('Location: /auth/login/');
+        exit;
     }
 
     /**
@@ -813,7 +841,9 @@ class Auth extends MY_Controller
 
                         if(!empty($this->input->post("minical_homepage")) && $this->input->post("minical_homepage") == 'minical_homepage')
                         {
-                            redirect('booking');
+                            // edirect('booking');
+                            header('Location: /booking/');
+                            exit;
                         }
                         else
                         {
@@ -847,7 +877,9 @@ class Auth extends MY_Controller
     {
         if ($this->tank_auth->is_logged_in()) {
             // logged in
-            redirect('/booking');           
+            // redirect('/booking');
+            header('Location: /booking');
+            exit;
 
         }
 
@@ -1631,7 +1663,9 @@ class Auth extends MY_Controller
     function send_again()
     {
         if (!$this->tank_auth->is_logged_in(false)) {                            // not logged in or activated
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
 
         } else {
             $this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
@@ -1697,10 +1731,14 @@ class Auth extends MY_Controller
     function forgot_password()
     {
         if ($this->tank_auth->is_logged_in()) {                                    // logged in
-            redirect('');
+            // redirect('');
+            header('Location: ');
+            exit;
 
         } elseif ($this->tank_auth->is_logged_in(false)) {                        // logged in, not activated
-            redirect('/auth/send_again/');
+            // redirect('/auth/send_again/');
+            header('Location: /auth/send-again/');
+            exit;
 
         } else {
             $this->form_validation->set_rules('login', 'Email or login', 'trim|required|xss_clean');
@@ -1862,7 +1900,9 @@ class Auth extends MY_Controller
                     1
                 );
 
-                redirect('/menu/select_hotel/'.$user_data['company_id']);
+                // redirect('/menu/select_hotel/'.$user_data['company_id']);
+                header('Location: /menu/select_hotel/' . $user_data['company_id']);
+                exit;
             } else {
                 // fail
                 $this->_show_message($this->lang->line('auth_message_new_employee_failed'));
@@ -1918,7 +1958,9 @@ class Auth extends MY_Controller
     function change_email()
     {
         if (!$this->tank_auth->is_logged_in()) {                                // not logged in or not activated
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
 
         } else {
             $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
@@ -2005,7 +2047,9 @@ class Auth extends MY_Controller
     function unregister()
     {
         if (!$this->tank_auth->is_logged_in()) {                                // not logged in or not activated
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
 
         } else {
             $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
@@ -2427,7 +2471,9 @@ class Auth extends MY_Controller
 
         if (!$user_id || !$user_email) {
             $this->logout();
-            redirect('/auth/login/');
+            // redirect('/auth/login/');
+            header('Location: /auth/login/');
+            exit;
         }
     }
 }

@@ -1,4 +1,6 @@
 <?php
+// ob_start();
+// die("We hit index.php");
 /*
  * --------------------------------------------------------------------
  * COMPOSER AUTOLOAD
@@ -86,7 +88,10 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  */
-	$system_path = 'system';
+// $system_path = __DIR__ . '/system';
+// $system_path = __DIR__ . '/../public/system';
+
+$system_path = 'system';
 
 /*
  *---------------------------------------------------------------
@@ -230,6 +235,11 @@ if (defined('ENVIRONMENT'))
  * And away we go...
  *
  */
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once BASEPATH.'core/CodeIgniter.php';
 
 /* End of file index.php */

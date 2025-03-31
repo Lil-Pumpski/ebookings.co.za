@@ -13,8 +13,8 @@ if (file_exists($envfile)) {
     $dbUser = 'root'/*getenv("DATABASE_USER")*/;
     $dbPass = 'root'/*getenv("DATABASE_PASS");*/;
     $dbName = 'minical_db'/*getenv("DATABASE_NAME")*/;
-    $projectUrl = 'http://localhost:8080/public'/*getenv("PROJECT_URL")*/;
-    $apiUrl = 'http://localhost:8080/api'/*getenv("API_URL")*/;
+    $projectUrl = 'http://localhost:8040'/*getenv("PROJECT_URL")*/;
+    $apiUrl = 'http://localhost:8040/api'/*getenv("API_URL")*/;
     $environment = 'development'/*getenv("ENVIRONMENT")*/;
 }
 

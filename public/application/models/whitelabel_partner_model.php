@@ -108,26 +108,29 @@ class Whitelabel_partner_model extends CI_Model {
         $this->db->select('wpxa.admin_id');
         $this->db->from('whitelabel_partner as wp');
         $this->db->join('whitelabel_partner_x_admin AS wpxa', "wp.id = wpxa.partner_id", "left");
-        
-        if($user_id !== null){
+
+        if ($user_id !== null) {
             $this->db->join('users as u', 'u.partner_id = wp.id', 'left');
             $this->db->where('u.id', $user_id);
         }
-        if($partner_id !== null){
+        if ($partner_id !== null) {
             $this->db->where('wp.id', $partner_id);
         }
-       
+
         $query = $this->db->get();
         $admins = array();
-        if($query->num_rows() > 0)
-        {
-            foreach($query->result_array() as $admin){
+
+        if ($query && $query->num_rows() > 0) {
+            foreach ($query->result_array() as $admin) {
                 $admins[] = $admin['admin_id'];
             }
+        } else {
+            log_message('error', '[WHITELABEL] Failed to fetch admin_ids. Last query: ' . $this->db->last_query());
         }
+
         return $admins;
     }
-    
+
     function get_partner_company_ids($partner_id)
     {
         $this->db->where('u.partner_id', $partner_id);
